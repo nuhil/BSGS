@@ -17,7 +17,7 @@ public class Main {
                 BigInteger bigint = sc.nextBigInteger();
                 data.add(bigint);
             } catch (NumberFormatException ex) {
-                // handle Code here
+                System.out.println(ex.toString());
             }
         }
 
@@ -29,8 +29,8 @@ public class Main {
 
         /* Compute m */
         BigInteger[] mp = p.sqrtAndRemainder();
-        BigInteger m = (mp[1].intValue() >= 0)? mp[0].add(new BigInteger("1")) : mp[0];
-        BigInteger q = BigInteger.ZERO, r=BigInteger.ZERO;
+        BigInteger m = (mp[1].intValue() >= 0)? mp[0].add(new BigInteger("1")) : mp[0]; // Ceiling ...
+        BigInteger q = BigInteger.ZERO, r = BigInteger.ZERO;
 
         HashMap<BigInteger, BigInteger> gs = new HashMap<>();
 
@@ -40,24 +40,23 @@ public class Main {
         }
 
         /* Compute g^-m mod p */
-        BigInteger gm = g.modPow(h.negate(), p);
+        BigInteger gm = g.modPow(m.negate(), p);
 
         /* Compute h(g^-m)^0, h(g^-m)^1 ... h(g^-m)^q where q = 0,1,2 ... */
         for (BigInteger j = BigInteger.ZERO; j.compareTo(m) == -1; j = j.add(BigInteger.ONE)) {
             BigInteger hs = h.multiply(gm.pow(j.intValue())).modPow(BigInteger.ONE, p);
 
             /* Check in gs HashMap for collison */
-            if (gs.get(hs) != null) {
-                r = gs.get(hs);
+            BigInteger collision = gs.get(hs);
+            if ( collision != null) {
+                r = collision;
                 q = j;
                 break;
             }
         }
 
-        System.out.println(m.multiply(q).add(r));
-
         Long stopTime = System.nanoTime();
-
+        System.out.println(m.multiply(q).add(r));
         System.out.println("It took " + ((stopTime - startTime) / 100000000.0) + " seconds.");
     }
 }
