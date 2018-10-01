@@ -25,6 +25,8 @@ public class Main {
         BigInteger g = data.get(1);
         BigInteger p = data.get(2);
 
+        Long startTime = System.nanoTime();
+
         /* Compute m */
         BigInteger[] mp = p.sqrtAndRemainder();
         BigInteger m = (mp[1].intValue() >= 0)? mp[0].add(new BigInteger("1")) : mp[0];
@@ -53,5 +55,9 @@ public class Main {
         }
 
         System.out.println(m.multiply(q).add(r));
+
+        Long stopTime = System.nanoTime();
+
+        System.out.println("It took " + ((stopTime - startTime) / 100000000.0) + " seconds.");
     }
 }
