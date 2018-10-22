@@ -3,15 +3,18 @@ import java.math.BigInteger;
 
 public class SaM {
 
-  public static BigInteger SquareAndMultiply(BigInteger base, int exponent) {
-    if (exponent < 0) {
+  public static BigInteger SquareAndMultiply(BigInteger base, BigInteger exponent) {
+    if (exponent.compareTo(BigInteger.ZERO) < 0 || exponent.compareTo(BigInteger.ONE) == 0) {
       return base;
+    }
+    if (exponent.compareTo(BigInteger.ZERO) == 0) {
+      return BigInteger.ONE;
     }
 
     BigInteger ret;
 
     // Convert exponent into a binary stream
-    String bits = Integer.toBinaryString(exponent);
+    String bits = exponent.toString(2);
     
     // Step 1: Initial setting
     ret = base;
@@ -27,15 +30,18 @@ public class SaM {
     return ret;
   }
 
-  public static BigInteger SquareAndMultiply(BigInteger base, int exponent, BigInteger mod) {
-    if (exponent < 0) {
+  public static BigInteger SquareAndMultiply(BigInteger base, BigInteger exponent, BigInteger mod) {
+    if (exponent.compareTo(BigInteger.ZERO) < 0 || exponent.compareTo(BigInteger.ONE) == 0) {
       return base;
+    }
+    if (exponent.compareTo(BigInteger.ZERO) == 0) {
+      return BigInteger.ONE;
     }
 
     BigInteger ret;
 
     // Convert exponent into a binary stream
-    String bits = Integer.toBinaryString(exponent);
+    String bits = exponent.toString(2);
     
     // Step 1: Initial setting
     ret = base.mod(mod);
@@ -51,9 +57,25 @@ public class SaM {
     return ret;
   }
 
+  private static void testResult(BigInteger testValue, BigInteger correct, String name) {
+    if (testValue.compareTo(correct) != 0) {
+      System.out.println("SquareAndMultiply test " + name + " failed.");
+      System.out.println("  Correct: " + correct);
+      System.out.println("  Output:  " + testValue);
+    }
+  }
+
+  private static void test(BigInteger base, BigInteger exponent, BigInteger mod,
+                           BigInteger correctA, BigInteger correctB, String name) {
+    BigInteger testValue = SaM.SquareAndMultiply(base, exponent);
+    testResult(testValue, correctA, name + "_a");
+    testValue = SaM.SquareAndMultiply(base, exponent, mod);
+    testResult(testValue, correctB, name + "_b");
+  }
+
   public static void main(String[] args) {
     BigInteger base;
-    int        exponent;
+    BigInteger exponent;
     BigInteger mod;
     BigInteger correctA;
     BigInteger correctB;
@@ -61,87 +83,51 @@ public class SaM {
 
     // Standard tests
     base     = new BigInteger("4");
-    exponent = 2;
+    exponent = new BigInteger("2");
     mod      = new BigInteger("100");
-    correctA = base.pow(exponent);
-    correctB = base.pow(exponent).mod(mod);
-
-    testValue = SaM.SquareAndMultiply(base, exponent);
-    if (testValue.compareTo(correctA) != 0) {
-      System.out.println("SquareAndMultiply test Standard_a failed.");
-      System.out.println("  Correct: " + correctA);
-      System.out.println("  Output:  " + testValue);
-    }
-
-    testValue = SaM.SquareAndMultiply(base, exponent, mod);
-    if (testValue.compareTo(correctB) != 0) {
-      System.out.println("SquareAndMultiply test Standard_b failed.");
-      System.out.println("  Correct: " + correctB);
-      System.out.println("  Output:  " + testValue);
-    }
+    correctA = base.pow(exponent.intValue());
+    correctB = base.pow(exponent.intValue()).mod(mod);
+    test(base, exponent, mod, correctA, correctB, "Standard");
 
     // Negative exponent
     base     = new BigInteger("4");
-    exponent = -1;
+    exponent = new BigInteger("-1");
     mod      = new BigInteger("100");
     correctA = base;
     correctB = base;
+    test(base, exponent, mod, correctA, correctB, "Negative");
 
-    testValue = SaM.SquareAndMultiply(base, exponent);
-    if (testValue.compareTo(correctA) != 0) {
-      System.out.println("SquareAndMultiply test Negative_a failed.");
-      System.out.println("  Correct: " + correctA);
-      System.out.println("  Output:  " + testValue);
-    }
+    // Zero exponent
+    base     = new BigInteger("4");
+    exponent = BigInteger.ZERO;
+    mod      = new BigInteger("100");
+    correctA = BigInteger.ONE;
+    correctB = BigInteger.ONE;
+    test(base, exponent, mod, correctA, correctB, "Zero");
 
-    testValue = SaM.SquareAndMultiply(base, exponent, mod);
-    if (testValue.compareTo(correctB) != 0) {
-      System.out.println("SquareAndMultiply test Negative_b failed.");
-      System.out.println("  Correct: " + correctB);
-      System.out.println("  Output:  " + testValue);
-    }
+    // Zero exponent
+    base     = new BigInteger("4");
+    exponent = new BigInteger("1");
+    mod      = new BigInteger("100");
+    correctA = base;
+    correctB = base;
+    test(base, exponent, mod, correctA, correctB, "One");
 
     // Book example
     base     = new BigInteger("4");
-    exponent = 26;
+    exponent = new BigInteger("26");
     mod      = new BigInteger("100");
-    correctA = base.pow(exponent);
-    correctB = base.pow(exponent).mod(mod);
-
-    testValue = SaM.SquareAndMultiply(base, exponent);
-    if (testValue.compareTo(correctA) != 0) {
-      System.out.println("SquareAndMultiply test 1a failed.");
-      System.out.println("  Correct: " + correctA);
-      System.out.println("  Output:  " + testValue);
-    }
-
-    testValue = SaM.SquareAndMultiply(base, exponent, mod);
-    if (testValue.compareTo(correctB) != 0) {
-      System.out.println("SquareAndMultiply test 1b failed.");
-      System.out.println("  Correct: " + correctB);
-      System.out.println("  Output:  " + testValue);
-    }
+    correctA = base.pow(exponent.intValue());
+    correctB = base.pow(exponent.intValue()).mod(mod);
+    test(base, exponent, mod, correctA, correctB, "Book");
 
     // Big exponenet
     base     = new BigInteger("4");
-    exponent = 214748364; // 2147483647 will cause an overflow. :(
+    exponent = new BigInteger("214748364"); // 2147483647 will cause an overflow. :(
     mod      = new BigInteger("100");
-    correctA = base.pow(exponent);
-    correctB = base.pow(exponent).mod(mod);
-
-    testValue = SaM.SquareAndMultiply(base, exponent);
-    if (testValue.compareTo(correctA) != 0) {
-      System.out.println("SquareAndMultiply test BigExp_a failed.");
-      System.out.println("  Correct: " + correctA);
-      System.out.println("  Output:  " + testValue);
-    }
-
-    testValue = SaM.SquareAndMultiply(base, exponent, mod);
-    if (testValue.compareTo(correctB) != 0) {
-      System.out.println("SquareAndMultiply test BigExp_b failed.");
-      System.out.println("  Correct: " + correctB);
-      System.out.println("  Output:  " + testValue);
-    }
+    correctA = base.pow(exponent.intValue());
+    correctB = base.pow(exponent.intValue()).mod(mod);
+    test(base, exponent, mod, correctA, correctB, "Big");
   }
 
 }
