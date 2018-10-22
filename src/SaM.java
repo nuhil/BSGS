@@ -4,11 +4,11 @@ import java.math.BigInteger;
 public class SaM {
 
   public static BigInteger SquareAndMultiply(BigInteger base, BigInteger exponent) {
-    if (exponent.compareTo(BigInteger.ZERO) < 0 || exponent.compareTo(BigInteger.ONE) == 0) {
-      return base;
-    }
     if (exponent.compareTo(BigInteger.ZERO) == 0) {
       return BigInteger.ONE;
+    }
+    if (exponent.compareTo(BigInteger.ONE) <= 0) {
+      return base;
     }
 
     BigInteger ret;
@@ -31,11 +31,11 @@ public class SaM {
   }
 
   public static BigInteger SquareAndMultiply(BigInteger base, BigInteger exponent, BigInteger mod) {
-    if (exponent.compareTo(BigInteger.ZERO) < 0 || exponent.compareTo(BigInteger.ONE) == 0) {
-      return base;
-    }
     if (exponent.compareTo(BigInteger.ZERO) == 0) {
       return BigInteger.ONE;
+    }
+    if (exponent.compareTo(BigInteger.ONE) <= 0) {
+      return base;
     }
 
     BigInteger ret;

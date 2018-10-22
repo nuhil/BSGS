@@ -29,22 +29,25 @@ public class Main {
 
         /* Compute m */
         BigInteger[] mp = p.sqrtAndRemainder();
-        BigInteger m = (mp[1].intValue() >= 0)? mp[0].add(new BigInteger("1")) : mp[0]; // Ceiling ...
+        BigInteger m = (mp[1].intValue() >= 0)? mp[0].add(BigInteger.ONE) : mp[0]; // Ceiling ...
         BigInteger q = BigInteger.ZERO, r = BigInteger.ZERO;
 
         HashMap<BigInteger, BigInteger> gs = new HashMap<>();
 
         /* Compute g^0, g^1 ... g^(m-1) mod p */
         for (BigInteger i = BigInteger.ZERO; i.compareTo(m) == -1; i = i.add(BigInteger.ONE)) {
-            gs.put(g.modPow(i, p), i);
+            BigInteger key = SaM.SquareAndMultiply(g, i, p);
+            gs.put(key, i);
         }
 
         /* Compute g^-m mod p */
-        BigInteger gm = g.modPow(m.negate(), p);
+        BigInteger gm = SaM.SquareAndMultiply(g.modInverse(p), m, p);
 
         /* Compute h(g^-m)^0, h(g^-m)^1 ... h(g^-m)^q where q = 0,1,2 ... */
         for (BigInteger j = BigInteger.ZERO; j.compareTo(m) == -1; j = j.add(BigInteger.ONE)) {
-            BigInteger hs = h.multiply(gm.pow(j.intValue())).modPow(BigInteger.ONE, p);
+            BigInteger hi = gm.pow(j.intValue());
+            BigInteger hj = h.multiply(hi);
+            BigInteger hs = hj.mod(p);
 
             /* Check in gs HashMap for collison */
             BigInteger collision = gs.get(hs);
@@ -57,6 +60,6 @@ public class Main {
 
         Long stopTime = System.nanoTime();
         System.out.println(m.multiply(q).add(r));
-        System.out.println("It took " + ((stopTime - startTime) / 100000000.0) + " seconds.");
+        System.out.println("It took " + ((stopTime - startTime) / 1000000000.0) + " seconds.");
     }
 }
