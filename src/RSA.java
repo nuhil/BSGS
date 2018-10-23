@@ -76,11 +76,11 @@ public class RSA {
     }
 
     public BigInteger encrypt(BigInteger x) {
-      return x.modPow(exp, n);
+      return SaM.SquareAndMultiply(x, exp, n);
     }
 
     public BigInteger decrypt(BigInteger y) {
-      return y.modPow(exp, n);
+      return SaM.SquareAndMultiply(y, exp, n);
     }
   }
 
@@ -150,7 +150,7 @@ public class RSA {
     test(Bob, x, "Book");
 
     // Get Bob's public key, encrypt and send the message
-    x = new BigInteger("4019283740198273058971406510749501982365017640571629387461923874610943867501983475092873405982304651928734601982650198465017834950178236");
+    x = new BigInteger("4019283740198273058971406510749501982365017640571629387461923874610943867501983475092873405982304651928734601982650198465017834950178236"); // Random number I typed in.
     y = pubKey.encrypt(x);
     Bob.sendMessage(y);
 
