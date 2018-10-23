@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class BSGS {
 	
-	public BigInteger solve(BigInteger h, BigInteger g, BigInteger p) {
+	public static BigInteger solve(BigInteger h, BigInteger g, BigInteger p) {
 	 
 	        Long startTime = System.nanoTime();
 

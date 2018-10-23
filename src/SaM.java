@@ -128,6 +128,14 @@ public class SaM {
     correctA = base.pow(exponent.intValue());
     correctB = base.pow(exponent.intValue()).mod(mod);
     test(base, exponent, mod, correctA, correctB, "Big");
+    
+    // Weird 
+    base = new BigInteger("16");
+    exponent = new BigInteger("3");
+    mod = new BigInteger("29");
+    correctA = base.pow(exponent.intValue());
+    correctB = base.pow(exponent.intValue()).mod(mod);
+    test(base, exponent, mod, correctA, correctB, "Weird");
   }
 
 }
