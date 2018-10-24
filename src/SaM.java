@@ -79,7 +79,6 @@ public class SaM {
     BigInteger mod;
     BigInteger correctA;
     BigInteger correctB;
-    BigInteger testValue;
 
     // Standard tests
     base     = new BigInteger("4");
@@ -88,6 +87,14 @@ public class SaM {
     correctA = base.pow(exponent.intValue());
     correctB = base.pow(exponent.intValue()).mod(mod);
     test(base, exponent, mod, correctA, correctB, "Standard");
+
+    // Patrick tests
+    base     = new BigInteger("16");
+    exponent = new BigInteger("3");
+    mod      = new BigInteger("29");
+    correctA = base.pow(exponent.intValue());
+    correctB = base.pow(exponent.intValue()).mod(mod);
+    test(base, exponent, mod, correctA, correctB, "Patrick");
 
     // Negative exponent
     base     = new BigInteger("4");
