@@ -77,7 +77,7 @@ public class BSGS {
 					// Throwing an exception 
 					System.out.println ("Exception is caught");
 
-					i= i.subtract(BigInteger.ONE);
+					i = i.subtract(BigInteger.ONE);
 					continue;
 				} 
 				key = key.multiply(g).mod(p);
@@ -121,9 +121,10 @@ public class BSGS {
 			BigInteger hs = hj.mod(p);
 
 			/* Check in queue for collison */
-			BigInteger collision = queue.get(hs);
-			if (collision != null) {
-				r = collision;
+			boolean collision = queue.contains(hs);
+			if (collision) {
+				//r = collision; // Uhhh
+				r = hs; // ??
 				q = j;
 				break;
 			}

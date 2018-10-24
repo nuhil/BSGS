@@ -115,20 +115,20 @@ public class Elgamal {
 	public static void main(String[] args) {
 		Random rand = new SecureRandom();
 		// Basic random p test
-		BigInteger p = BigInteger.probablePrime(64, rand);
+		BigInteger p = BigInteger.probablePrime(24, rand);
 		System.out.println("p is " + p);
 		
 		//2 is always a generator
 		BigInteger alpha = new BigInteger("2");
 		
 		//some random d and i
-		BigInteger d = new BigInteger(1024, rand);
+		BigInteger d = new BigInteger(256, rand);
 		System.out.println("d: " + d);
-		BigInteger i = new BigInteger(1024, rand);
+		BigInteger i = new BigInteger(256, rand);
 		System.out.println("i: " + i);
 		Elgamal elg = new Elgamal(p, alpha, d);
 		
-		/*for (int m = 1; m < 50; m++) {
+		for (int m = 1; m < 50; m++) {
 
 			BigInteger message = new BigInteger(Integer.toString(m));
 			Cipher cipher = elg.encrypt(message, i);
@@ -140,13 +140,13 @@ public class Elgamal {
 			}else {
 				System.out.println(mp + " equals " + message);
 			}
-		}*/
+		}
 		
 		// Addition test
 		for(int m = 1; m < 3; m++) {
 			BigInteger message = new BigInteger(Integer.toString(m));
 			System.out.println("message value: " + message);
-			BigInteger add = new BigInteger(1024, rand);
+			BigInteger add = new BigInteger(32, rand);
 			System.out.println("addition value: " + add);
 			BigInteger sum = message.add(add).mod(p);
 			
@@ -154,7 +154,6 @@ public class Elgamal {
 			cipher = elg.add(cipher, add);
 			
 			BigInteger mp = elg.decrypt(cipher);
-			System.out.println("Answer is: " + sum);
 			if(sum.compareTo(mp) != 0) {
 				System.out.println(mp + " does not equal " + sum);
 				System.exit(1);
