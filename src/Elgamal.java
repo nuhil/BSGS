@@ -50,7 +50,7 @@ public class Elgamal {
 	public BigInteger decrypt(Cipher cipher) {
 		BigInteger km = SaM.SquareAndMultiply(cipher.getKe(), privateKey, pubKey.getP());
 		BigInteger mi = km.modInverse(pubKey.getP());
-		BigInteger xkm = cipher.getCtext().multiply(mi).mod(pubKey.getP());
+		BigInteger xkm = (cipher.getCtext().multiply(mi)).mod(pubKey.getP());
 		return BSGS.solve(xkm, pubKey.getAlpha(), pubKey.getP());
 	}
 	
@@ -114,18 +114,29 @@ public class Elgamal {
 
 	public static void main(String[] args) {
 		Random rand = new SecureRandom();
+		int bitSize = 32;
 		// Basic random p test
-		BigInteger p = BigInteger.probablePrime(24, rand);
+		BigInteger p = BigInteger.probablePrime(bitSize, rand);
 		System.out.println("p is " + p);
 		
 		//2 is always a generator
 		BigInteger alpha = new BigInteger("2");
 		
 		//some random d and i
-		BigInteger d = new BigInteger(256, rand);
+		//d and i must be elements {2, ...., p-2}
+		BigInteger d = new BigInteger("0");
+		do {
+			d = new BigInteger(bitSize, rand);
+		}while(d.compareTo(p.subtract(BigInteger.TWO)) == 1);
+		
 		System.out.println("d: " + d);
-		BigInteger i = new BigInteger(256, rand);
+		
+		BigInteger i = new BigInteger("0");
+		do {
+			i = new BigInteger(bitSize, rand);
+		}while(i.compareTo(p.subtract(BigInteger.TWO)) == 1);
 		System.out.println("i: " + i);
+		
 		Elgamal elg = new Elgamal(p, alpha, d);
 		
 		for (int m = 1; m < 50; m++) {
@@ -143,7 +154,7 @@ public class Elgamal {
 		}
 		
 		// Addition test
-		for(int m = 1; m < 3; m++) {
+		for(int m = 1; m < 100; m++) {
 			BigInteger message = new BigInteger(Integer.toString(m));
 			System.out.println("message value: " + message);
 			BigInteger add = new BigInteger(32, rand);
